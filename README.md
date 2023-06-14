@@ -1,6 +1,8 @@
 # CostCrawler
 
-CostCrawler is a Python3 application designed to streamline the collection and comparison of hospital rate cards. It features a Flask interface running on port 5000, making the process of gathering hospital pricing data efficient and user-friendly. CostCrawler enables users to make more informed healthcare decisions by comparing prices for different procedures across various facilities.
+CostCrawler is a Python3 application designed to streamline the collection and comparison of hospital rate cards. It features a Flask interface running on port 5000, making the process of gathering hospital pricing data efficient and user-friendly. CostCrawler enables users to make more informed healthcare decisions by comparing prices for different procedures across various facilities.  I created the project in 2019, but kept it private until 2023.  Please feel free to adapt it or use it for your own purposes. 
+
+![image](https://github.com/KristopherKubicki/CostCrawler/assets/478212/bf854ceb-10dc-4bdc-991a-3edf05044764)
 
 ## Features
 CostCrawler provides the following key functionalities:
@@ -50,3 +52,9 @@ The `bin` directory contains scripts that handle various aspects of the project:
 - `map_raw_procedures.py`: Performs data cleanup.
 - `run.web.sh`: A helper script that runs the web services.
 - `scrape_raw_charges.py`: A script that scrapes health care provider information from a list of domains.
+
+![image](https://github.com/KristopherKubicki/CostCrawler/assets/478212/b9f2a628-7c13-4292-91f3-c4177cf459e3)
+
+
+
+
