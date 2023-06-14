@@ -1,0 +1,12 @@
+zone_name|zone_city|zone_state|zone_country|zone_latitude|zone_long|facility_id|facility_name|facility_lat|facility_long|agg_procedure_id|agg_procedure_name|true_procedure_id|true_procedure_name|raw_procedure_id|raw_procedure_name|raw_price|source_domain|source_time
+{%- for ogg in network.agg_procedures %}
+{%- for tgg in ogg.true_procedure %}
+{%- for agg in tgg.raw_procedure %}
+{%- for lgg in agg.raw_charge %}
+{%- if lgg.facility_id in network.facility_ids %}
+{{zone.name}}|{{zone.city}}|{{zone.state}}|{{zone.country}}|{{zone.latitude}}|{{zone.longitude}}|{{lgg.facility.facility_id}}|{{lgg.facility.display_name}}|{{lgg.facility.latitude}}|{{lgg.facility.longitude}}|{{ogg.agg_procedure_id}}|{{ogg.name}}|{{tgg.true_procedure_id}}|{{tgg.name}}|{{agg.raw_procedure_id}}|{{agg.description}}|{{ "${:,.2f}".format(lgg.charge) }}|{{lgg.facility.domain}}|{{ lgg.creation_time.strftime('%Y-%m-%d') }}
+{%- endif %}
+{%- endfor %}
+{%- endfor %}
+{%- endfor %}
+{%- endfor %}

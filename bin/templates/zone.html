@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="zone">
+    <h1>Zone</h1>
+    {% for lzone in zones %}
+    <a href='/zone/{{lzone.name}}'>{{lzone.name}}</a> {{lzone.facility_count}} <br/>
+    {% endfor %}
+    <p>.</p>
+  </div>
+{% endblock %}
+

@@ -1,0 +1,8 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="agg_procedure">
+    {% for agg_proc in agg_procedures %}
+    <h1>{{agg_proc.true_procedure | length}} <a href='/agg_procedure/{{agg_proc.agg_procedure_id}}'>{{agg_proc.name}}</a> {{agg_proc.description}} {{'$%.2f' % agg_proc.average_charge}}</h1>
+    {% endfor %}
+  </div>
+{% endblock %}

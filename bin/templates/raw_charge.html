@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="raw_charge"> 
+    {% if facility %}
+        <p><a href='/facility/{{facility.facility_id}}'>{{facility.facility_id}}</a> {{facility.name}} {{facility.raw_charge|length}} <a href='https://www.google.com/maps/search/?api=1&query={{facility.latitude}},{{facility.longitude}}' target=_'blank'>Map</a>
+	 
+	<details><summary>Upload</summary>
+	<form action = "/facility/{{facility.facility_id}}" method = "post" enctype="multipart/form-data">  
+	<textarea cols=80 rows=20 name='text'></textarea><br/>  
+        or <input type="file" name="file" /> 
+        <input type = "submit" value="Submit">  
+        </form>  
+	</details>
+	</p>
+
+    {% elif raw_charges | length > 0 %}
+        {% set raw_charge = raw_charges[0] %}
+        {% if raw_charge.raw_procedure.true_procedure.agg_procedure %}
+            <h1>{{raw_charge.raw_procedure.true_procedure.agg_procedure.true_procedure | length}} <a href='/agg_procedure/{{raw_charge.raw_procedure.true_procedure.agg_procedure.agg_procedure_id}}'>{{raw_charge.raw_procedure.true_procedure.agg_procedure.name}}</a> {{ '$%.2f' % raw_charge.raw_procedure.true_procedure.agg_procedure.average_charge}}</h1>
+        {% endif %}
+        {% if raw_charge.raw_procedure.true_procedure %}
+            <h2>{{raw_charge.raw_procedure.true_procedure.raw_procedure | length}} <a href='/true_procedure/{{raw_charge.raw_procedure.true_procedure.true_procedure_id}}'>{{raw_charge.raw_procedure.true_procedure.name}}</a> {{'$%.2f' % raw_charge.raw_procedure.true_procedure.average_charge}}</h2>
+        {% endif %}
+        <h3>{{raw_charge.raw_procedure.raw_charge | length}} <a href='/raw_procedure/{{raw_charge.raw_procedure.raw_procedure_id}}'>{{raw_charge.raw_procedure.description}}</a> {{'$%.2f' % raw_charge.raw_procedure.average_charge}}</h3>
+
+    {% endif %}
+
+    {% for raw_charge in raw_charges %}
+        <h4>
+        {% if not facility %}
+            <a href='/facility/{{raw_charge.facility_id}}'>{{raw_charge.facility.name}}</a>
+        {% endif %}
+        <a href='/raw_procedure/{{raw_charge.raw_procedure.raw_procedure_id}}'>{{raw_charge.raw_procedure.description}}</a>
+        <a href='/raw_charge/{{raw_charge.raw_charge_id}}'>${{raw_charge.charge}}</a> {{raw_charge.creation_time}} 
+        </h4>
+
+    {% endfor %}
+  </div>
+{% endblock %}

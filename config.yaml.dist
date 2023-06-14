@@ -1,0 +1,7 @@
+# 
+
+name: Westwood
+version: 0.1
+database: 
+tmp: /tmp/
+path: /home/ubuntu/code/costcrawler/

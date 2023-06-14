@@ -1,0 +1,27 @@
+<div style='margin: 10px'>
+
+	<a href='/facility'>Facilities</a>
+<a href='/agg_procedure'>Procedures</a>
+<a href='/zone'>Locations</a>
+
+
+                <div style='float:right; margin:10px;'>
+                        <form action = "/zone" method = "POST" >
+				<input type = "text" name = "location" id='location' placeholder='60712' cols='5'
+                                style='width:10vw'>
+                                <input type = "submit" value='Update'/>
+                        </form>
+                </div>
+
+        <div style='width: 60vw; align:left; margin:10px'>
+		<br/>
+		<div>
+                        <form action = "/procedures" method = "POST" >
+                                <input type = "text" name = "search" id='search' placeholder='Search for a procedure, like MRI or CT' cols='50'
+                                style='width:30vw'>
+                                <input type = "submit" value='Search'/>
+                        </form>
+                </div>
+        </div>
+
+</div>

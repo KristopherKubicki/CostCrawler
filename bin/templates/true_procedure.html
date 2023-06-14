@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="true_procedure">
+
+	  {% if agg_procedure %} 
+    <h1>{{agg_procedure.true_procedure | length }} <a href='/agg_procedure/{{agg_procedure.agg_procedure_id}}'>{{agg_procedure.name}}</a> {{ '$%.2f' % agg_procedure.average_charge}}</h1>
+    {% endif %}
+
+    {% for true_proc in true_procedures %}
+    <h2>{{true_proc.raw_procedure | length }} <a href='/true_procedure/{{true_proc.true_procedure_id}}'>{{true_proc.display_name}}</a> {{ '$%.2f' % true_proc.average_charge}}</h2>
+    {% endfor %}
+  </div>
+{% endblock %}
+

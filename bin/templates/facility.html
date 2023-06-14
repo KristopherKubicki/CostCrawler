@@ -1,0 +1,27 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="facility">
+
+
+    <h2>Nearby</h2>
+    {% for facility in network.facilities %}
+
+                {% if facility.agg_procedures|length > 0 %}
+                     <details><summary> 
+		{% endif %}
+    <a href='/facility/{{facility.facility_id}}'>{{facility.facility_id}}</a> [{{facility.population}}] {{facility.display_name}} {{facility.raw_charges|length}} {{facility.raw_procedures|length}} {{facility.true_procedures|length}} {{facility.agg_procedures|length}} 
+
+                {% if facility.agg_procedures|length > 0 %}
+		    </summary>
+                      {% with facility=facility %}
+                            {% include "facility_menu.html" %}
+                      {% endwith %}
+   		    </details>
+		{% else %}
+	    	     <br/>
+		{% endif %}
+
+    {% endfor %}
+  </div>
+{% endblock %}
+

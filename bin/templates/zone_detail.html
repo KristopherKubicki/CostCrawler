@@ -1,0 +1,91 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="zone">
+
+	  <h1> <a href='/zone/{{zone.name}}'>{{zone.name}}</a> 
+		  {% if zone.name not in zone.city %}
+		  {{zone.city}} 
+		  {% endif %}
+	  </h1>
+
+  <div>
+     <div style='float: left; text-overflow: ellpisis; overflow:hidden; white-space: nowrap; min-width:400px; max-width:50%' >
+    <table>
+	    <tr></tr>
+
+        <tr><td>Name:</td><td>{{zone.name}}, {{zone.state}}</td></tr>
+        <tr><td>Geolocation:</td><td><a href='https://www.google.com/maps/search/?api=1&query={{zone.latitude}},{{zone.longitude}}' target='_blank'>{{zone.latitude}}, {{zone.longitude}}</a></td></tr>
+        <tr><td>County:</td><td>{{zone.county}}</td></tr>
+	{% if zone.area %}
+        <tr><td>Area Codes:</td><td>{{zone.area}}</td></tr>
+	{% endif %}
+        <tr><td>ID:</td><td>{{zone.zone_id}}</td></tr>
+        <tr><td>Population:</td><td>{{zone.population}}</td></tr>
+        <tr><td>Density:</td><td>{{zone.density}}</td></tr>
+
+	    <tr><td>Facilities:</td><td> ~{{ zone.facility_count }} within 30 mi.</td></tr>
+	    <tr><td>Local Prices:</td><td> {{ network.raw_charges|length }}</td></tr>
+	    <tr><td>Procedures:</td><td> {{ network.true_procedures|length }}</td></tr>
+	    <tr><td>Details:</td><td> <details><summary>Click</summary> {{ zone.usz }}</details></td></tr>
+    </table>
+	 </div>
+    
+    <div id="map" style="height: 250px; margin: 10px; min-height: 250px; min-width: 250px;"></div>
+    <br style="clear:both" />
+
+  </div>
+
+<script type="text/javascript">
+  // The first parameter are the coordinates of the center of the map
+  // The second parameter is the zoom level
+	var map = L.map('map').setView([{{zone.latitude}}, {{zone.longitude}}], 9);
+  
+  // {s}, {z}, {x} and {y} are placeholders for map tiles
+  // {x} and {y} are the x/y of where you are on the map
+  // {z} is the zoom level
+  // {s} is the subdomain of cartodb
+
+    var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>, &copy; WayMed, Inc.'
+     });
+  
+  // Now add the layer onto the map
+  map.addLayer(layer);
+
+
+    {% for facility in network.facilities %}
+          L.marker([{{facility.latitude}}, {{facility.longitude}}]).addTo(map).bindPopup("<strong>{{facility.display_name}}</strong>").openPopup();
+    {% endfor %}
+    L.marker([{{zone.latitude}}, {{zone.longitude}}]).addTo(map).bindPopup("<strong>{{zone.name}}</strong>").openPopup();
+  
+</script>
+
+
+                   {% if network %}
+    <h2>Charges</h2>
+                            {% include "network_menu.html" %}
+                      {% endif %}
+
+    <h2>Nearby</h2>
+    {% for facility in network.facilities %}
+
+                {% if facility.agg_procedures|length > 0 %}
+                     <details><summary> 
+		{% endif %}
+
+    <a href='/facility/{{facility.facility_id}}'>{{facility.facility_id}}</a> [{{facility.population}}] {{facility.display_name}} 
+
+                {% if facility.agg_procedures|length > 0 %}
+		    </summary>
+                      {% with facility=facility %}
+                            {% include "facility_menu.html" %}
+                      {% endwith %}
+   		    </details>
+		{% else %}
+	    	     <br/>
+		{% endif %}
+
+    {% endfor %}
+  </div>
+{% endblock %}
+

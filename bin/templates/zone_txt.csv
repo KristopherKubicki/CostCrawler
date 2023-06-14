@@ -1,0 +1,16 @@
+{% for facility in network.facilities %}
+{% for ogg in facility.agg_procedures %}
+{% if ogg.local_average_charge([facility]) > 600 %}
+{{facility.latitude}},{{facility.longitude}}|{{facility.name}}|{{ogg.name}}|{{ "${:,.0f}".format(ogg.local_average_charge([facility])) }}|Save {{ (100*(1-(500 / ogg.local_average_charge([facility]))))|round|int }}% when you book instantly online with WayMed.com<br/>
+{% endif %}
+
+
+{% for tgg in facility.true_procedures %}
+{% if tgg.local_average_charge([facility]) > 600 %}
+{{facility.latitude}},{{facility.longitude}}|{{facility.name}}|{{tgg.display_name}}|{{ "${:,.0f}".format(tgg.local_average_charge([facility])) }}|Save {{ (100*(1-(500 / tgg.local_average_charge([facility]))))|round|int }}% when you book instantly online with WayMed.com<br/>
+{% endif %}
+{% endfor %}
+
+{% endfor %}
+{% endfor %}
+

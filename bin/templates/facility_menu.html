@@ -1,0 +1,43 @@
+                <ul>
+                {% for ogg in facility.agg_procedures %}
+                <li><details><summary>{{ogg.name}} {{ "${:,.2f}".format(ogg.local_average_charge([facility])) }}</summary>
+
+                <ul>
+                    {% for tgg in facility.true_procedures %}
+		    <li><a href='/true_procedure/{{tgg.true_procedure_id}}'>{{ tgg.name }}</a> {{ "${:,.2f}".format(tgg.local_average_charge([facility])) }}
+
+                         <ul>{% for agg in tgg.raw_procedure %}
+
+
+                            {% for lgg in agg.raw_charge %}
+                                {% if lgg.facility_id == facility.facility_id %}
+
+
+                            <li>
+                                {% if agg.bill_id %}
+                                    ({{agg.bill_id}})
+	          	        {% endif %}
+
+				    <a href='/raw_procedure/{{agg.raw_procedure_id}}'>
+				{{ agg.description }} 
+				    </a>
+				<span title='
+				        {% if lgg.scrape_time %}
+					scraped: {{ lgg.scrape_time.strftime('%Y-%m-%d') }}
+				        {% elif agg.creation_time %}
+					scraped: {{ lgg.creation_time.strftime('%Y-%m-%d') }}
+					{% endif %}
+					'>
+                                    {{ "${:,.2f}".format(lgg.charge) }}
+				    <font size='-2'>source: {{ facility.domain }} {{ lgg.scrape_time.strftime('%Y-%m-%d') }}</font>
+				  </span>
+                            </li>
+                                {% endif %}
+                            {% endfor %}
+                          {% endfor %}
+                         </ul>
+                    {% endfor %}</li>
+                </ul>
+                </details></li>
+                {% endfor %}
+                </ul>

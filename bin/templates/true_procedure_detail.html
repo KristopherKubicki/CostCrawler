@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="true_procedure"> 
+    {% if true_procedure %}
+
+        <p>
+	<h1> <a href='/true_procedure/{{true_procedure.true_procedure_id}}'>{{true_procedure.display_name}}</a></h1>
+
+	<div>
+	         <div style='float: left; text-overflow: ellpisis; overflow:hidden; white-space: nowrap; min-width:400px; max-width:50%' >
+       
+	<table>  
+            <tr> </tr>
+         
+	<tr><td>Name:</td><td>{{true_procedure.name}}</td></tr>
+	<tr><td>Reference:</td><td>{{true_procedure.hcpc_code}}</td></tr>
+	<tr><td>Category:</td><td></td></tr>
+	<tr><td>Anatomy:</td><td>{{true_procedure.anatomy or ''}}</td></tr>
+	<tr><td>Reasons:</td><td>{{true_procedure.reasons or ''}}</td></tr>
+
+	<tr><td>Update:</td><td><details><summary>Update</summary>
+			<form action = "/true_procedure/{{true_procedure.true_procedure_id}}" method = "POST" >
+				<table>
+					<tr><td>Title:</td><td> <input type = "text" name = "title" id='title' placeholder='{{true_procedure.display_name}}' value='{{true_procedure.display_name or ""}}' size='50'></td></tr>
+					<tr><td>Anatomy:</td><td> <input type = "text" name = "anatomy" id='anatomy' placeholder='{{true_procedure.anatomy or "head, neck, leg" }}' value='{{true_procedure.anatomy or ""}}' size='50'></td></tr>
+					<tr><td>Reasons:</td><td> <input type = "text" name = "reasons" id='reasons' placeholder='{{true_procedure.reasons or "infection, tumor, etc." }}' value='{{true_procedure.reasons or ""}}' size='50'></td></tr>
+				</table>
+                                <input type = "submit" value='Update'/>
+                        </form>
+
+
+		</td></tr>
+	</table>
+		 </div>
+
+
+    <br style="clear:both" />
+
+                   {% if network %}
+    <h2>Charges</h2>
+                            {% include "network_menu.html" %}
+                      {% endif %}
+
+
+
+    {% endif %}
+
+  </div>
+
+{% endblock %}

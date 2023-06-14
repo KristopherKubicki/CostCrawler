@@ -1,0 +1,159 @@
+{% extends "layout.html" %}
+{% block content %}
+  <div class="raw_charge"> 
+    {% if facility %}
+
+        <p>
+	<h1> <a href='/facility/{{facility.facility_id}}'>{{facility.facility_id}}</a> {{facility.display_name}}</h1>
+
+	<div>
+	         <div style='float: left; text-overflow: ellpisis; overflow:hidden; white-space: nowrap; min-width:400px; max-width:50%' >
+       
+	<table>  
+            <tr> </tr>
+         
+	<tr><td>Name:</td><td>{{facility.name}}</td></tr>
+	<tr><td>Address:</td><td>{{facility.address}}</td></tr>
+	<tr><td>Geolocation:</td><td><a href='https://www.google.com/maps/search/?api=1&query={{facility.latitude}},{{facility.longitude}}' target='_blank'>{{facility.latitude}}, {{facility.longitude}}</a></td></tr>
+	<tr><td>ID:</td><td>{{facility.facility_id}}</td></tr>
+	<tr><td>Status:</td><td>
+		{% if facility.healthy %}
+		OK
+		{% else %}
+		<b>WARN</b> 
+		{% if facility.raw_charges|length == 0 %}
+                     No prices
+		{% endif %}
+		{% endif %}
+		</td></tr>
+        {% if facility.population %}
+	<tr><td>Population:</td><td>{{ facility.population }}  </td></tr>
+	{% endif %}
+        {% if facility.nearby_zips %}
+	<tr><td>Nearby:</td><td>
+                <details><summary>
+		{% for lzone in facility.nearby_zips[:5] %}
+                    <a href='/zone/{{lzone}}'>{{lzone}}</a> 
+                {% endfor %}
+		</summary>
+		{% for lzone in facility.nearby_zips[5:] %}
+                    <a href='/zone/{{lzone}}'>{{lzone}}</a> 
+                {% endfor %}
+		</details>
+		</td></tr>
+	{% endif %}
+
+        {% if facility.keywords %}
+	<tr><td>Keywords:</td><td>{{ facility.keywords|truncate(64) }}  </td></tr>
+        {% endif %}
+
+	{% if facility.raw_charges %} 
+	    <tr><td>Prices:</td><td>{{facility.raw_charges|length}} </td></tr>
+	{% endif %}
+	{% if facility.raw_procedures %} 
+	    <tr><td>Procedures:</td><td>{{facility.raw_procedures|length}} </td></tr>
+	{% endif %}
+	{% if facility.true_procedures %} 
+	    <tr><td>Mapped:</td><td>{{facility.true_procedures|length}} </td></tr>
+	{% endif %}
+	{% if facility.agg_procedures %} 
+	    <tr><td>Live:</td><td>{{facility.agg_procedures|length}} </td></tr>
+	{% endif %}
+
+
+        {% if facility.homepage %}
+	<tr><td>Domain:</td><td><a href='https://{{ facility.domain }}' target=_'blank'>{{facility.domain}}</a></td></tr>
+        {% endif %}
+        {% if facility.homepage %}
+	<tr><td>Home Page:</td><td><a href='{{ facility.homepage }}' target=_'blank' title='{{facility.homepage|truncate(64)}}'>{{facility.homepage|truncate(64)}}</a></td></tr>
+        {% endif %}
+        {% if facility.pricepage %}
+	<tr><td>Price Page:</td><td><a href='{{ facility.pricepage }}' target=_'blank' title='{{facility.pricepage|truncate(64)}}'>{{facility.pricepage|truncate(64)}}</a></td></tr>
+        {% endif %}
+        {% if facility.pricelist %}
+	<tr><td>Price List:</td><td><a href='{{ facility.pricelist }}' target=_'blank' title='{{facility.pricelist|truncate(64)}}'>{{facility.pricelist|truncate(64)}}</a></td></tr>
+        {% endif %}
+
+        {% if facility.scrape_json and facility.scrape_json['result']['url'] %}
+	<tr><td>Google Places:</td><td><a href='{{ facility.scrape_json['result']['url'] }}' target=_'blank' title='{{ facility.scrape_json['result']['url'] }}'>{{ facility.scrape_json['result']['url']|truncate(64) }}</a></td></tr>
+	{% endif %}
+
+
+            {% if facility.pricepages %}
+	    <tr><td>Price Pages:</td><td><details><summary></summary>
+		{% for lpage in facility.scrape_json['pricepages'] %}
+		<button>Save</button> <a href='{{lpage}}' target=_'blank' title='{{lpage}}'>{{lpage|truncate(64)}}</a><br/>
+		{% endfor %}
+			    </details></td></tr>
+	    {% endif %}
+
+            {% if facility.pricelists %}
+	    <tr><td>Price Lists:</td><td><details><summary></summary>
+		{% for lpage in facility.scrape_json['pricelists'] %}
+		<button>Save</button> <a href='{{lpage}}' target=_'blank' title='{{lpage}}'>{{lpage|truncate(64)}}</a><br/>
+		{% endfor %}
+			    </details></td></tr>
+	    {% endif %}
+
+        {% if facility.scrape_json %}
+            {% if facility.scrape_json['result']['icon'] %}
+	        <tr><td>Icon</td><td><img src='{{ facility.scrape_json['result']['icon'] }}' style='max-height: 1em;'/></td></tr>
+            {% endif %}
+        {% endif %}
+
+	<tr><td>Last Scrape:</td><td>{{ facility.scrape_time }} </td></tr>
+	<tr><td>Rescan</td><td><form action = "/facility/{{ facility.facility_id }}/rescan" method = "POST">
+                  <input type = "hidden" name = "rescan" />
+                  <input type = "submit" value='rescan'/>
+			</form></td></tr>
+
+			 
+	<tr><td>Upload</td><td>
+			<details><summary>Click</summary>
+	<form action = "/facility/{{facility.facility_id}}" method = "post" enctype="multipart/form-data">  
+	<textarea cols=80 rows=20 name='text'></textarea><br/>  
+        or <input type="file" name="file" /> 
+        <input type = "submit" value="Submit">  
+        </form>  
+	</details>
+			</td></tr>
+	</table>
+		 </div>
+
+
+    <div id="map" style="margin: 10px; min-height: 250px; min-width: 250px;"></div>
+    <br style="clear:both" />
+
+  </div>
+
+<script type="text/javascript">
+    var map = L.map('map').setView([{{facility.latitude}}, {{facility.longitude}}], 9);
+    var layer = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, &copy; <a href="http://cartodb.com/attributions">CartoDB</a>, &copy; WayMed, Inc.'
+     });
+  
+  // Now add the layer onto the map
+  map.addLayer(layer);
+
+
+          L.marker([{{facility.latitude}}, {{facility.longitude}}]).addTo(map).bindPopup("<strong>{{facility.display_name}}</strong>").openPopup();
+  
+</script>
+
+
+
+
+        {% if facility.true_procedures %} 
+	        <details><summary>Procedures ({{facility.true_procedures|length}})</summary>
+                {% with facility=facility %}
+                      {% include "facility_menu.html" %}
+                {% endwith %}
+	        </details>
+        {% endif %}
+
+    {% endif %}
+
+
+
+  </div>
+{% endblock %}
