@@ -33,4 +33,4 @@ tldextract==2.2.2
 urllib3==1.25.9
 uszipcode==0.2.4
 validators==0.15.0
-Werkzeug==1.0.0
+Werkzeug==2.2.3
